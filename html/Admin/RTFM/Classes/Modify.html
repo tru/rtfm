@@ -44,8 +44,8 @@
 %# works based on those contributions, and sublicense and distribute
 %# those contributions and any derivatives thereof.
 %#%# END BPS TAGGED BLOCK }}}
-<& /Admin/RTFM/Elements/ClassTabs, id => $ClassObj->id, current_tab =>
-$current_subtab, Title => $title &>
+<& /Elements/Header, Title => $title &>
+<& /Elements/Tabs &>
 <& /Elements/ListActions, actions => \@results &>
 
 <form action="<%$RT::WebPath%>/Admin/RTFM/Classes/Modify.html" method="post">

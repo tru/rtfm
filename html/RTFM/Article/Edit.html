@@ -44,17 +44,8 @@
 %# works based on those contributions, and sublicense and distribute
 %# those contributions and any derivatives thereof.
 %#%# END BPS TAGGED BLOCK }}}
-% if ($id && $id ne 'new') {
-<& /RTFM/Article/Elements/Tabs, 
-    Article => $ArticleObj, 
-    current_subtab => "RTFM/Article/Edit.html?id=".$ArticleObj->Id , 
-    id => $id, 
-    Title => $title &>
-% } else {
-<& /RTFM/Article/Elements/Tabs, 
-    current_tab => "RTFM/Article/PreCreate.html",
-       Title => loc('Create a new article') &>
-% }
+<& /Elements/Header, Title => $title &>
+<& /Elements/Tabs &>
 <& /Elements/ListActions, actions => \@results &>
 
 <form method="post" action="Edit.html" name="EditArticle" id="EditArticle" enctype="multipart/form-data">

@@ -1,0 +1,92 @@
+<%init>
+my $path = $r->path_info;
+my $rtfm = Menu->child(rtfm => title => loc("RTFM"), path => "/RTFM/index.html");
+my $articles = $rtfm->child(articles => title => loc("Articles"), path => "/RTFM/Article/Search.html");
+$articles->child(search => title => loc("Search"), path => "/RTFM/Article/Search.html");
+$articles->child(new => title => loc("New Article"), path => "/RTFM/Article/PreCreate.html");
+if ($path =~ m{^/RTFM/Article/}) {
+    if (my $id = $m->request_args->{'id'}) {
+        PageMenu->child(display => title => loc("Display"), path => "/RTFM/Article/Display.html?id=$id");
+        PageMenu->child(history => title => loc("History"), path => "/RTFM/Article/History.html?id=$id");
+        my $obj = RT::FM::Article->new( $session{'CurrentUser'} );
+        $obj->Load($id);
+        PageMenu->child(modify => title => loc("Modify"), path => "/RTFM/Article/Edit.html?id=$id")
+            if $obj->CurrentUserHasRight("ModifyArticle");
+        PageMenu->child(delete => title => loc("Delete"), path => "/RTFM/Article/Delete.html?id=$id")
+            if $obj->CurrentUserHasRight("DeleteArticle");
+    }
+}
+
+$rtfm->child(topics => title => loc("Topics"), path => "/RTFM/Topics.html");
+if ( $session{'CurrentUser'}->HasRight( Right => 'ShowConfigTab', Object => $RT::System ) ) {
+    my $config = Menu->child("tools")->child("config");
+    my $rtfmadmin = $config->child( rtfm => title => loc("RTFM"), path  => "/Admin/RTFM/index.html" );
+    my $classadmin = $rtfmadmin->child( classes => title => loc("Classes"), path  => "/Admin/RTFM/Classes/index.html" );
+    $classadmin->child( select => title => loc("Select class"), path => "/Admin/RTFM/Classes/index.html");
+    $classadmin->child( new => title => loc("New class"), path => "/Admin/RTFM/Classes/Modify.html?Create=1");
+    if ($path =~ m{^/Admin/RTFM/Classes/}) {
+        if (my $id = $m->request_args->{'id'}) {
+            PageMenu->child( basics =>
+                title => loc("Basics"),
+                path  => "/Admin/RTFM/Classes/Modify.html?id=".$id,
+            );
+            PageMenu->child( topics =>
+                title => loc("Topics"),
+                path  => "/Admin/RTFM/Classes/Topics.html?id=".$id,
+            );
+            PageMenu->child( 'custom-fields' =>
+                title => loc("Custom Fields"),
+                path  => "/Admin/RTFM/Classes/CustomFields.html?id=".$id,
+            );
+            PageMenu->child( 'group-rights' =>
+                title => loc("Group Rights"),
+                path  => "/Admin/RTFM/Classes/GroupRights.html?id=".$id,
+            );
+            PageMenu->child( 'user-rights' =>
+                title => loc("User Rights"),
+                path  => "/Admin/RTFM/Classes/UserRights.html?id=".$id,
+            );
+            PageMenu->child( 'applies-to' =>
+                title => loc("Applies to"),
+                path  => "/Admin/RTFM/Classes/Objects.html?id=".$id,
+            );
+        }
+    }
+    my $global = $rtfmadmin->child( global =>
+        title => loc("Global"),
+        path  => "/Admin/RTFM/Global/index.html",
+    );
+    $global->child( 'group-rights' => title => loc("Group Rights"), path => "/Admin/RTFM/Global/GroupRights.html" );
+    $global->child( 'user-rights' => title => loc("User Rights"), path => "/Admin/RTFM/Global/UserRights.html" );
+    $global->child( 'topics' => title => loc("Topics"), path => "/Admin/RTFM/Global/Topics.html" );
+
+    $rtfmadmin->child( 'custom-fields' =>
+        title => loc("Custom Fields"),
+        path  => "/Admin/CustomFields/index.html?"
+               . $m->comp('/Elements/QueryString', type => 'RT::FM::Class-RT::FM::Article'),
+    );
+
+    if ( $path =~ m{^/Admin/CustomFields/} ) {
+        if ( my $id = $m->request_args->{'id'} ) {
+            my $obj = RT::CustomField->new( $session{'CurrentUser'} );
+            $obj->Load($id);
+            if ( $obj->LookupType =~ /^RT::FM::Class/io ) {
+                PageMenu->child( 'applies-to' => title => loc('Applies to'), path => "/Admin/CustomFields/Objects.html?id=" . $id );
+            }
+        }
+    }
+    $config->child("global")->child("custom-fields")->child(rtfm =>
+        title => loc("RTFM Articles"),
+        path => "/Admin/Global/CustomFields/RTFM-Class-RTFM-Article.html"
+    );
+}
+
+if ( $path =~ m{^/Ticket/} and PageMenu->child("actions")) {
+    PageMenu->child("actions")->child("rtfm-extract" =>
+        title => loc("Extract Article"),
+        path  => "/RTFM/Article/ExtractIntoClass.html?Ticket=".$m->request_args->{'id'},
+    );
+}
+
+
+</%init>

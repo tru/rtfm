@@ -44,7 +44,8 @@
 %# works based on those contributions, and sublicense and distribute
 %# those contributions and any derivatives thereof.
 %#%# END BPS TAGGED BLOCK }}}
-<& /RTFM/Elements/Tabs, current_toptab => "RTFM/Topics.html", Title => loc('Browse by topic'), class => $class, topic => $id &>
+<& /Elements/Header, Title => loc('Browse by topic') &>
+<& /Elements/Tabs &>
 
 <& /Elements/ListActions, actions => \@Actions &>
 <a href="Topics.html"><&|/l&>All topics</&></a>

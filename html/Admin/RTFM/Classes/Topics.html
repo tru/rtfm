@@ -44,7 +44,8 @@
 %# works based on those contributions, and sublicense and distribute
 %# those contributions and any derivatives thereof.
 %#%# END BPS TAGGED BLOCK }}}
-<& /Admin/RTFM/Elements/ClassTabs, id => $ClassObj->Id, Title => $title, current_tab => "Admin/RTFM/Classes/Topics.html?id=$id" &>
+<& /Elements/Header, Title => $title &>
+<& /Elements/Tabs &>
 
 <& /Admin/RTFM/Elements/Topics, title => $title, RootObj => $ClassObj, %ARGS &>
 

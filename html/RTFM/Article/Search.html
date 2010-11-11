@@ -44,7 +44,8 @@
 %# works based on those contributions, and sublicense and distribute
 %# those contributions and any derivatives thereof.
 %#%# END BPS TAGGED BLOCK }}}
-<& /RTFM/Article/Elements/Tabs, current_tab => "RTFM/Article/Search.html", Title => loc("Search for articles") &>
+<& /Elements/Header, Title => loc("Search for articles") &>
+<& /Elements/Tabs &>
 
 % unless ( keys %ARGS ) {
 %   my $Classes=new RT::FM::ClassCollection($session{'CurrentUser'});
